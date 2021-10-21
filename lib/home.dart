@@ -40,13 +40,13 @@ class _HomeState extends State<Home> {
 
   loadModel() async {
     await Tflite.loadModel(
-        model: 'assets/model_unquant.tflite', labels: 'assets/labels.txt');
+        model: 'assets/model.tflite', labels: 'assets/labels.txt');
   }
 
   classifyImage(File image) async {
     var output = await Tflite.runModelOnImage(
         path: image.path,
-        numResults: 2,
+        numResults: 5,
         threshold: 0.5,
         imageMean: 127.5,
         imageStd: 127.5);
@@ -135,46 +135,92 @@ class _HomeState extends State<Home> {
                   children: <Widget>[
                     Container(
                       child: Center(
-                          child: _loading
-                              ? Container(
-                                  width: 300,
-                                  child: Column(
-                                    // ignore: prefer_const_literals_to_create_immutables
-                                    children: <Widget>[
-                                      Image.asset('assets/flower.png'),
-                                      const SizedBox(
-                                        height: 60.0,
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : Container(
-                                  child: Column(
-                                    // ignore: prefer_const_literals_to_create_immutables
-                                    children: <Widget>[
-                                      Container(
-                                        height: 300.0,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          child: Image.file(_image),
-                                        ),
+                        child: _loading
+                            ? Container(
+                                width: 300,
+                                child: Column(
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: <Widget>[
+                                    Image.asset('assets/flower.png'),
+                                    const SizedBox(
+                                      height: 40.0,
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container(
+                                child: Column(
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: <Widget>[
+                                    Container(
+                                      height: 300.0,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: Image.file(_image),
                                       ),
-                                      const SizedBox(height: 20.0),
-                                      _output != null
-                                          ? Text(
-                                              'Prediction is: ${_output[0]['label']}',
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20.0),
-                                            )
-                                          : Container(),
-                                      const SizedBox(
-                                        height: 30.0,
-                                      )
-                                    ],
-                                  ),
-                                )),
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    _output != null
+                                        ? Text(
+                                            'Prediction is: ${_output[0]['label']}',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20.0),
+                                          )
+                                        : Container(),
+                                    const SizedBox(
+                                      height: 20.0,
+                                    )
+                                  ],
+                                ),
+                              ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: pickImage,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 180,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 17.0),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFF56AB2F),
+                                  borderRadius: BorderRadius.circular(6)),
+                              child: const Text(
+                                "Take a Photo",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          GestureDetector(
+                            onTap: pickGalleryImage,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 180,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 17.0),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFF56AB2F),
+                                  borderRadius: BorderRadius.circular(6)),
+                              child: const Text(
+                                "Camera Roll",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 ),
